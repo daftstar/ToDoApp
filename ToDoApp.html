@@ -1,0 +1,139 @@
+<html>
+<head>
+  <title>To Do Task</title>
+  <link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+
+  <style type="text/css">
+   
+  body {
+    background: #0AC5F4;
+  }
+
+   #templates { 
+      display: none;
+    }
+
+    #tasks .task .task-name {
+      background: white;
+      padding: 1px 10px; 
+      margin-bottom: 10px;
+      width: 400px;
+      border-radius: 10px;
+      clear: left;
+    }
+
+    #submit {
+      font-family: helvetica;
+      background-color: white;
+      font-size: 1em;
+    }
+
+/*    #tasks .task .task-complete{
+      visibility: hidden;
+      float:left;    
+    }*/
+ 
+  </style>
+</head>
+<body>
+ 
+<br>
+<br>
+ 
+Task Name:<input id="task_name" type="text"></input>
+          <input id='complete'  type='hidden' value='false'></input>
+          <input id="submit"    type="button" value="add task"></input>
+
+<div id="tasks"></div>
+ 
+<div id="templates">
+  <script class="task" type="text/template">
+    <div class="task">
+
+      <div class="task-name">
+        <input id="check_me_off" type="checkbox" class=checkbox >
+        Task name: <%= name %>
+      </div>
+
+      <div class ="task-complete">
+        <%= complete %>
+      </div>
+    </div>
+
+  </script>
+</div>
+ 
+ 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+ 
+ 
+<script type="text/javascript">
+
+  var renderList = function(list){
+    // taskTemplateHtml is a var that will hold the contents of the parent id, templates and the child id task.  
+    var taskTemplateHtml = $('#templates .task').html();
+    // taskTemplate is a var that will hold the new template. (from the function _.template)
+    var taskTemplate = _.template(taskTemplateHtml);
+
+    $('#tasks').empty();
+
+    for (var i = 0; i < list_of_tasks.length; i +=1) {
+      var newItemHtml = taskTemplate(list_of_tasks[i]);
+      $('#tasks').append(newItemHtml);
+    }
+  };
+
+
+
+  var list_of_tasks = [];
+  //   {
+  //     name: 'Create TODO list',
+  //     complete: false
+  //   },
+  //   {
+  //     name: 'Implement Excercise',
+  //     complete: true
+  //   }
+  // ];
+
+
+
+// ------------  jQuery Functions ----------------
+  // this is what submits the information in the fields to
+  // a new template.
+
+
+  $('#submit').on('click', function (e) {
+      var task_name = $("#task_name").val();
+      var newItem = { name: task_name, complete: false };
+      //unshift is what pushes the newest created object to the front. 
+      list_of_tasks.unshift(newItem);
+
+      renderList(list_of_tasks);
+    });
+
+
+  $('#task_name').keypress(function(e) {
+      if(e.which == 13) {
+          // jQuery(this).blur();
+          jQuery('#submit').focus().click(); // puts focus on submit button, then executes click command
+          jQuery('#task_name').focus().val(""); // puts focus back on task_name and adds "" value. 
+      }
+  });
+
+  // user checkbox class as this applies to each checkbox per template.
+  $(document).on('change', '.checkbox', function(e) {
+    var index = $('.checkbox').index(this);
+    // for this particular task, change the value to the opposite value (allows for back and forth checking)
+    list_of_tasks[index].complete =! list_of_tasks[index].complete;
+
+    renderList(list_of_tasks);
+  });
+
+
+
+</script>
+ 
+</body>
+</html>

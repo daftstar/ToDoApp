@@ -1,0 +1,122 @@
+<html>
+<head>
+  <title>To Do Task</title>
+  <link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+
+  <style type="text/css">
+   
+  body {
+    background: #0AC5F4;
+  }
+
+   #templates { 
+      display: none;
+    }
+
+    #tasks .task .task-name {
+      background: white;
+      padding: 1px 10px; 
+      margin-bottom: 10px;
+      width: 400px;
+      border-radius: 10px;
+      clear: left;
+    }
+
+    #submit {
+      font-family: helvetica;
+      background-color: white;
+      font-size: 1em;
+    }
+
+/*    #tasks .task .task-complete{
+      visibility: hidden;
+      float:left;    
+    }*/
+ 
+  </style>
+</head>
+<body>
+ 
+<br>
+<br>
+ 
+Task Name:<input id="task_name" type="text"></input>
+          <input id='complete'  type='hidden' value='false'></input>
+          <input id="submit"    type="button" value="add task"></input>
+
+<div id="tasks"></div>
+ 
+<div id="templates">
+  <script class="task" type="text/template">
+    <div class="task">
+
+      <div class="task-name">
+        <input id="check_me_off" type="checkbox" class=checkbox >
+        Task name: <%= name %>
+      </div>
+
+      <div class ="task-complete">
+        <%= complete %>
+      </div>
+
+    </div>
+
+
+ 
+  </script>
+</div>
+ 
+ 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+ 
+ 
+<script type="text/javascript">
+
+  tasks = [];
+    var taskTemplateHtml = $('#templates .task').html();
+    var taskTemplate = _.template(taskTemplateHtml);
+    
+    var tasks = [];
+    for (var i = 0; i < tasks.length; i +=1) {
+      var single_task = tasks[i];
+   
+      $('#tasks').prepend(newTaskHtml);
+    };
+
+// ------------  jQuery Functions ----------------
+  // this is what submits the information in the fields to
+  // a new template.
+  $('#submit').on('click', function (e) {
+      var task_name = $("#task_name").val();
+      var complete = $("#complete").val();
+      tasks.unshift (task_name, complete);
+   
+     var newTaskHtml = taskTemplate({ name: task_name, complete: complete});
+     $('#tasks').prepend(newTaskHtml); 
+    });
+
+  // 'clicks' submit when a user hits the enter key
+  $('#task_name').keypress(function(e) {
+      if(e.which == 13) {
+          // jQuery(this).blur();
+          jQuery('#submit').focus().click(); // puts focus on submit button, then executes click command
+          jQuery('#task_name').focus().val(""); // puts focus back on task_name and adds "" value. 
+      }
+  });
+
+
+  $(document).on('change', 'check_me_off', function(e) {
+    // alert("I heard it!");
+    var index = $('.check_me_off').index(this);
+    testTasks[index].complete = !testTasks[index].complete;
+  });
+
+
+
+  
+
+</script>
+ 
+</body>
+</html>
